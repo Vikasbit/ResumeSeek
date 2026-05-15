@@ -3,10 +3,6 @@
  
 ResumeSeek analyzes your resume like a recruiter would — and tells you exactly why it's getting filtered out by ATS systems. Upload your resume, get a full AI-generated career report in seconds.
  
-![ResumeSeek Deployed on Vercel]([[https://img.shields.io/badge/Powered%20by-Gemini%201.5%20Flash-blue?style=for-the-badge&logo=google](https://i.postimg.cc/wxsH3BBb/Screenshot-2026-05-15-075905.png)](https://i.postimg.cc/wxsH3BBb/Screenshot-2026-05-15-075905.png))
-![ATS Score]([[[https://img.shields.io/badge/Node.js-Express-green?style=for-the-badge&logo=node.js](https://i.postimg.cc/G3jKFFt5/Screenshot-2026-05-15-080003.png](https://i.postimg.cc/G3jKFFt5/Screenshot-2026-05-15-080003.png))](https://i.postimg.cc/G3jKFFt5/Screenshot-2026-05-15-080003.png))
-![Skills](https://i.postimg.cc/C1sG40hN/Screenshot-2026-05-15-080025.png)
- 
 ---
  
 ## 🚀 Live Demo
