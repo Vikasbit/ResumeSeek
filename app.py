@@ -143,4 +143,4 @@ if __name__ == '__main__':
           f"  Server: http://localhost:{port}\n"
           f"  Public Folder: {os.path.join(os.path.dirname(__file__), 'public')}\n")
 
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=port)
