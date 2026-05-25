@@ -1,6 +1,23 @@
-node_modules/
+# =============================================================================
+# .gitignore — Files/folders to exclude from Git
+# =============================================================================
+
+# Python virtual environment (created by: python -m venv venv)
+venv/
+
+# Python cache files (auto-generated when you run Python)
+__pycache__/
+*.pyc
+
+# Environment variables (contains your secret API key!)
 .env
+
+# Vercel deployment
 .vercel
+
+# Log files
 *.log
+
+# Scratch/test files
 scratch/
 test_resume.txt

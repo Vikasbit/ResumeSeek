@@ -1,126 +1,96 @@
-# ResumeSeek 🔍
-### AI-Powered Resume Analyzer for ATS Optimization
- 
-ResumeSeek analyzes your resume like a recruiter would — and tells you exactly why it's getting filtered out by ATS systems. Upload your resume, get a full AI-generated career report in seconds.
- 
----
- 
-## 🚀 Live Demo
+# 🚀 ResumeSeek — AI Resume Scanner
 
- 👉 **[Try ResumeSeek Live](https://resume-seek.vercel.app/)**
- 
-## ✨ Features
- 
-- 📄 **Resume Upload** — Supports PDF, DOCX, and TXT formats
-- 🤖 **AI Analysis** — Powered by Google Gemini 1.5 Flash with an "Elite Career Consultant" prompt
-- 📊 **ATS Match Score** — Animated progress ring showing how optimized your resume is
-- 📝 **Professional Summary** — High-impact value proposition rewrite
-- 🛠️ **Skills Extraction** — Identifies 10+ key technical and soft skills
-- 💼 **Job Recommendations** — Personalized role suggestions based on your experience
-- 📈 **Improvement Roadmap** — Specific, actionable suggestions to boost your ATS ranking
-- 🔒 **Privacy-Friendly** — File parsing happens entirely client-side; only extracted text hits the server
----
- 
+An AI-powered resume analyzer that gives you an **ATS (Applicant Tracking System) score**, identifies your skills, recommends job roles, and suggests improvements — all using Google's Gemini AI.
+
 ## 🛠️ Tech Stack
- 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | HTML5, CSS3, Vanilla JavaScript |
-| File Parsing | PDF.js, Mammoth.js |
-| Markdown Rendering | marked.js |
-| Backend | Node.js, Express |
-| AI Engine | Google Gemini 1.5 Flash API |
-| Deployment | Vercel |
- 
----
- 
-## 🎨 Design
- 
-Luxury Tech aesthetic featuring:
-- Dark mode with vibrant **orange & chocolate accents**
-- **Glassmorphism** UI cards
-- **Mesh gradient** backgrounds
-- Smooth micro-animations
-- Fully responsive (desktop, tablet, mobile)
----
- 
-## 📂 Project Structure
- 
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **Frontend** | HTML, CSS, JavaScript | User interface (upload, display results) |
+| **Backend** | Python + Flask | Server & API logic |
+| **AI Engine** | Google Gemini API | Resume analysis |
+| **Styling** | Vanilla CSS + Google Fonts | Modern glassmorphism design |
+
+## 📁 Project Structure
+
 ```
-resumeseek/
-├── public/
-│   ├── index.html       # Main frontend
-│   ├── style.css        # Styling & animations
-│   └── script.js        # File handling & API calls
-├── server.js            # Express backend & Gemini API integration
-├── .env                 # API credentials (not committed)
-├── vercel.json          # Vercel deployment config
-└── package.json
+ResumeSeek/
+├── public/              ← Frontend (what the user sees)
+│   ├── index.html       ← Main HTML page
+│   ├── style.css        ← All the styling (colors, layout, animations)
+│   └── script.js        ← Frontend logic (file upload, API calls, display results)
+│
+├── app.py               ← Backend server (Python/Flask) — handles API requests
+├── requirements.txt     ← Python dependencies (like package.json for Node)
+├── .env                 ← Your secret API key (not shared on Git)
+├── .gitignore           ← Files to exclude from Git
+├── LICENSE              ← Project license
+└── README.md            ← You are here!
 ```
- 
----
- 
-## ⚙️ Getting Started
- 
+
+## 🚀 How to Run
+
 ### Prerequisites
- 
-- Node.js v18+
-- A [Google Gemini API Key](https://aistudio.google.com/app/apikey)
-### Installation
- 
+- **Python 3.8+** installed ([Download](https://www.python.org/downloads/))
+- A **Google Gemini API Key** ([Get one free](https://aistudio.google.com/apikey))
+
+### Step-by-Step
+
 ```bash
-# Clone the repo
-git clone https://github.com/your-username/resumeseek.git
-cd resumeseek
- 
-# Install dependencies
-npm install
- 
-# Create .env file
-echo "GEMINI_API_KEY=your_api_key_here" > .env
- 
-# Start the server
-node server.js
+# 1. Clone the repository
+git clone https://github.com/Vikasbit/ResumeSeek.git
+cd ResumeSeek
+
+# 2. Create a virtual environment (keeps dependencies isolated)
+python -m venv venv
+
+# 3. Activate the virtual environment
+# On Windows:
+venv\Scripts\activate
+# On Mac/Linux:
+source venv/bin/activate
+
+# 4. Install dependencies
+pip install -r requirements.txt
+
+# 5. Create your .env file with your API key
+# Create a file called .env in the root folder with:
+GEMINI_API_KEY=your_api_key_here
+
+# 6. Run the server
+python app.py
 ```
- 
-Open `http://localhost:3000` in your browser.
- 
----
- 
-## 🌐 Deployment (Vercel)
- 
-```bash
-# Install Vercel CLI
-npm i -g vercel
- 
-# Deploy
-vercel
-```
- 
-Add `GEMINI_API_KEY` as an environment variable in your Vercel project settings.
- 
----
- 
-## 📸 How It Works
- 
-1. User uploads a resume (PDF / DOCX / TXT)
-2. Client-side libraries extract raw text from the file
-3. Extracted text is sent to the Express backend
-4. Backend calls Gemini 1.5 Flash with a structured career consultant prompt
-5. AI returns a full report — score, summary, skills, recommendations, roadmap
-6. Results are rendered beautifully in the UI
----
- 
-## 🤝 Contributing
- 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you'd like to change.
- 
----
- 
-## 📄 License
- 
-[MIT](LICENSE)
- 
----
- 
-<p align="center">Built with 💻 by <a href="https://github.com/your-username">Vikas</a> — with a little help from Claude & Gemini along the way.</p>
+
+### 🌐 Open in Browser
+
+Visit: **http://localhost:3000**
+
+## 📖 How It Works
+
+1. **Upload** your resume (PDF, DOCX, or TXT)
+2. The frontend **extracts text** from the file using JavaScript libraries
+3. The text is sent to the **Flask backend** (`POST /api/analyze`)
+4. Flask forwards it to **Google Gemini AI** with a structured prompt
+5. The AI returns an analysis with ATS score, skills, job recommendations, and improvements
+6. The frontend **displays the results** in beautiful glass-morphism cards
+
+## 🔑 Understanding the Code
+
+### Backend (`app.py`)
+- **Flask** creates the web server (like Express in Node.js)
+- **`@app.route('/api/analyze')`** defines the API endpoint
+- **`requests.post()`** calls the Gemini AI API
+- **`jsonify()`** sends JSON responses back to the frontend
+
+### Frontend (`public/`)
+- **`index.html`** — The page structure (navigation, upload area, results cards)
+- **`style.css`** — Modern design with glassmorphism, gradients, and animations
+- **`script.js`** — Handles file upload, text extraction, API calls, and result display
+
+## 📝 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file.
+
+## 👤 Author
+
+**Vikas** — [GitHub](https://github.com/Vikasbit) · [LinkedIn](https://www.linkedin.com/in/vikaskp034/)

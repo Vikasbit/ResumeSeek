@@ -1,0 +1,4 @@
+# Python Dependencies for ResumeSeek
+flask>=3.0
+requests>=2.31
+python-dotenv>=1.0
