@@ -80,7 +80,7 @@ def analyze_resume():
     """
 
     # Call Gemini AI API
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={api_key}"
 
     request_body = {
         "contents": [{"parts": [{"text": prompt}]}],
