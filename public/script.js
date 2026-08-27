@@ -33,7 +33,101 @@ const elements = {
 // Initialize PDF.js
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-// --- File Handling ---
+// ============================================================
+// Scroll Reveal Animation System
+// ============================================================
+const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const delay = parseInt(entry.target.dataset.delay || '0', 10);
+            setTimeout(() => {
+                entry.target.classList.add('visible');
+            }, delay);
+            revealObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ============================================================
+// Animated Stat Counter
+// ============================================================
+function animateCounter(el, target, duration = 1800) {
+    let start = 0;
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Ease out cubic
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.round(eased * target);
+        
+        el.textContent = current.toLocaleString();
+        
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        }
+    }
+    
+    requestAnimationFrame(update);
+}
+
+const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const el = entry.target;
+            const target = parseInt(el.dataset.count, 10);
+            if (target) {
+                animateCounter(el, target);
+            }
+            statObserver.unobserve(el);
+        }
+    });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.stat-number[data-count]').forEach(el => statObserver.observe(el));
+
+// ============================================================
+// Nav Scroll Effect
+// ============================================================
+const mainNav = document.getElementById('mainNav');
+let lastScroll = 0;
+
+window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    if (mainNav) {
+        mainNav.classList.toggle('scrolled', scrollY > 20);
+    }
+    lastScroll = scrollY;
+}, { passive: true });
+
+// ============================================================
+// Hero "Get Started" button scrolls to upload
+// ============================================================
+const heroGetStarted = document.getElementById('heroGetStarted');
+if (heroGetStarted) {
+    heroGetStarted.addEventListener('click', () => {
+        const dropZone = document.getElementById('dropZone');
+        if (dropZone) {
+            dropZone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Flash the upload container
+            setTimeout(() => {
+                dropZone.style.borderColor = 'var(--accent-2)';
+                dropZone.style.boxShadow = '0 0 0 4px rgba(232, 116, 12, 0.08), var(--shadow-lg)';
+                setTimeout(() => {
+                    dropZone.style.borderColor = '';
+                    dropZone.style.boxShadow = '';
+                }, 1200);
+            }, 600);
+        }
+    });
+}
+
+// ============================================================
+// File Handling
+// ============================================================
 elements.dropZone.addEventListener('dragover', (e) => {
     e.preventDefault();
     elements.dropZone.classList.add('dragover');
@@ -93,7 +187,9 @@ elements.removeFile.addEventListener('click', (e) => {
     elements.resumeUpload.value = '';
 });
 
-// --- Text Extraction ---
+// ============================================================
+// Text Extraction
+// ============================================================
 async function extractText(file) {
     if (file.type === 'text/plain') {
         return await file.text();
@@ -115,7 +211,9 @@ async function extractText(file) {
     return '';
 }
 
-// --- Analysis Logic ---
+// ============================================================
+// Analysis Logic
+// ============================================================
 elements.analyzeBtn.addEventListener('click', async () => {
     if (!state.selectedFile) return;
 
@@ -131,18 +229,31 @@ elements.analyzeBtn.addEventListener('click', async () => {
         displayResults(response);
 
         // Smooth transition to results
+        const sectionsToHide = [
+            elements.heroSection,
+            document.getElementById('howItWorks'),
+            document.getElementById('features'),
+            document.querySelector('.hero-bg'),
+            document.querySelector('.hero-upload-wrap')
+        ];
+
+        // Fade out
+        elements.heroSection.style.transition = 'opacity 0.4s ease';
         elements.heroSection.style.opacity = '0';
-        document.getElementById('howItWorks').style.display = 'none';
-        document.getElementById('features').style.display = 'none';
         
         setTimeout(() => {
+            sectionsToHide.forEach(el => {
+                if (el) el.style.display = 'none';
+            });
             elements.heroSection.classList.add('hidden');
             elements.resultsSection.classList.remove('hidden');
             elements.resultsSection.style.opacity = '0';
-            setTimeout(() => {
+            elements.resultsSection.style.transition = 'opacity 0.5s ease';
+            
+            requestAnimationFrame(() => {
                 elements.resultsSection.style.opacity = '1';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            }, 50);
+            });
         }, 400);
 
     } catch (error) {
@@ -181,11 +292,11 @@ function displayResults(data) {
     elements.atsScore.textContent = score;
     elements.scoreFeedback.textContent = data.score_feedback || 'Based on your experience and skills.';
 
-    // Animate Ring
-    const radius = 52;
+    // Animate Ring (updated radius to 60 for larger ring)
+    const radius = 60;
     const circumference = 2 * Math.PI * radius;
     elements.scoreCircle.style.strokeDasharray = `${circumference} ${circumference}`;
-    elements.scoreCircle.style.strokeDashoffset = circumference; // Start empty
+    elements.scoreCircle.style.strokeDashoffset = circumference;
 
     setTimeout(() => {
         const offset = circumference - (score / 100) * circumference;
@@ -210,16 +321,28 @@ function displayResults(data) {
     elements.improvementContent.innerHTML = marked.parse(data.improvements || '');
 }
 
-// --- Reset App ---
+// ============================================================
+// Reset App
+// ============================================================
 function resetApp() {
     state.selectedFile = null;
     state.extractedText = '';
     
-    // Reset UI
+    // Reset UI — restore all hidden sections
+    const sectionsToRestore = [
+        elements.heroSection,
+        document.getElementById('howItWorks'),
+        document.getElementById('features'),
+        document.querySelector('.hero-bg'),
+        document.querySelector('.hero-upload-wrap')
+    ];
+
+    sectionsToRestore.forEach(el => {
+        if (el) el.style.display = '';
+    });
+
     elements.heroSection.classList.remove('hidden');
     elements.heroSection.style.opacity = '1';
-    document.getElementById('howItWorks').style.display = 'block';
-    document.getElementById('features').style.display = 'block';
     elements.resultsSection.classList.add('hidden');
     elements.fileInfo.classList.add('hidden');
     elements.processSection.classList.add('hidden');
@@ -228,14 +351,17 @@ function resetApp() {
     
     // Reset Score
     elements.atsScore.textContent = '0';
-    elements.scoreCircle.style.strokeDashoffset = '326.7';
+    const circumference = 2 * Math.PI * 60;
+    elements.scoreCircle.style.strokeDashoffset = String(circumference);
     
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 window.resetApp = resetApp;
 
-// --- Mobile Menu Toggle ---
+// ============================================================
+// Mobile Menu Toggle
+// ============================================================
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const navLinks = document.getElementById('navLinks');
 
@@ -279,4 +405,3 @@ if (mobileMenuBtn && navLinks) {
 }
 
 console.log("ResumeSeek initialized.");
-
